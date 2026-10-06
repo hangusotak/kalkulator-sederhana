@@ -1,0 +1,119 @@
+/* ====== Warna (ubah di sini kalau ingin ganti tema) ====== */
+:root {
+  --latar: #e6ebef;
+  --badan: #1f2a33;
+  --layar: #121a20;
+  --tombol: #33424e;
+  --tombol-hover: #3f505e;
+  --fungsi: #566876;
+  --operator: #3d8fa6;
+  --sama: #f0b13a;
+  --teks: #f2f5f7;
+  --teks-redup: #9db0bd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;       /* tengah secara vertikal */
+  justify-content: center;   /* tengah secara horizontal */
+  background: var(--latar);
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+}
+
+/* ====== Badan kalkulator ====== */
+.kalkulator {
+  width: 100%;
+  max-width: 340px;
+  margin: 16px;
+  padding: 18px;
+  background: var(--badan);
+  border-radius: 20px;
+  box-shadow: 0 18px 40px rgba(31, 42, 51, 0.35);
+}
+
+/* ====== Layar ====== */
+.layar {
+  min-height: 96px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  background: var(--layar);
+  border-radius: 12px;
+  text-align: right;
+  overflow: hidden;
+}
+
+.riwayat {
+  min-height: 22px;
+  font-size: 1rem;
+  color: var(--teks-redup);
+}
+
+.angka {
+  margin-top: 6px;
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: var(--teks);
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+/* ====== Tombol ====== */
+.tombol {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);  /* 4 kolom sama lebar */
+  gap: 10px;
+}
+
+.tombol button {
+  padding: 18px 0;
+  border: none;
+  border-radius: 12px;
+  background: var(--tombol);
+  color: var(--teks);
+  font-size: 1.25rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.tombol button:hover {
+  background: var(--tombol-hover);
+}
+
+.tombol button:active {
+  transform: scale(0.95);
+}
+
+.tombol button:focus-visible {
+  outline: 3px solid var(--sama);
+  outline-offset: 2px;
+}
+
+.tombol .fungsi {
+  background: var(--fungsi);
+}
+
+.tombol .operator {
+  background: var(--operator);
+  font-size: 1.5rem;
+}
+
+.tombol .sama {
+  background: var(--sama);
+  color: #1f2a33;
+  font-weight: 700;
+}
+
+.tombol .lebar {
+  grid-column: span 2;   /* tombol 0 selebar 2 kolom */
+}
+
+.tombol .fungsi:hover { background: #667a89; }
+.tombol .operator:hover { background: #4aa1b8; }
+.tombol .sama:hover { background: #f5be5a; }
