@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Sederhana</title>
+  <!-- Menghubungkan file tampilan -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="kalkulator">
+    <!-- Layar: baris atas = hitungan sebelumnya, baris bawah = angka saat ini -->
+    <div class="layar">
+      <div class="riwayat" id="riwayat"></div>
+      <div class="angka" id="angka">0</div>
+    </div>
+
+    <!-- Tombol-tombol. data-aksi dipakai JavaScript untuk tahu tombol apa yang ditekan -->
+    <div class="tombol">
+      <button class="fungsi" data-aksi="hapus-semua">AC</button>
+      <button class="fungsi" data-aksi="hapus">⌫</button>
+      <button class="fungsi" data-aksi="persen">%</button>
+      <button class="operator" data-aksi="operator" data-nilai="÷">÷</button>
+
+      <button data-aksi="angka" data-nilai="7">7</button>
+      <button data-aksi="angka" data-nilai="8">8</button>
+      <button data-aksi="angka" data-nilai="9">9</button>
+      <button class="operator" data-aksi="operator" data-nilai="×">×</button>
+
+      <button data-aksi="angka" data-nilai="4">4</button>
+      <button data-aksi="angka" data-nilai="5">5</button>
+      <button data-aksi="angka" data-nilai="6">6</button>
+      <button class="operator" data-aksi="operator" data-nilai="−">−</button>
+
+      <button data-aksi="angka" data-nilai="1">1</button>
+      <button data-aksi="angka" data-nilai="2">2</button>
+      <button data-aksi="angka" data-nilai="3">3</button>
+      <button class="operator" data-aksi="operator" data-nilai="+">+</button>
+
+      <button class="lebar" data-aksi="angka" data-nilai="0">0</button>
+      <button data-aksi="desimal">,</button>
+      <button class="sama" data-aksi="hasil">=</button>
+    </div>
+  </main>
+
+  <script>
+    // ====== 1. Data yang disimpan kalkulator ======
+    let angkaSekarang = "0";   // angka yang sedang diketik
+    let angkaSebelumnya = "";  // angka pertama sebelum operator
+    let operatorAktif = "";    // + − × ÷
+    let timpaLayar = false;    // true = ketikan berikutnya mengganti layar
+
+    const layarAngka = document.getElementById("angka");
+    const layarRiwayat = document.getElementById("riwayat");
+
+    // ====== 2. Menampilkan hasil ke layar ======
+    function tampilkan() {
+      // Tampilkan angka dengan koma (gaya Indonesia)
+      layarAngka.textContent = angkaSekarang.replace(".", ",");
+      layarRiwayat.textContent = operatorAktif
+        ? angkaSebelumnya.replace(".", ",") + " " + operatorAktif
+        : "";
+    }
+
+    // ====== 3. Aksi tiap tombol ======
+    function ketikAngka(n) {
+      if (timpaLayar || angkaSekarang === "0" || angkaSekarang === "Error") {
+        angkaSekarang = n;
+        timpaLayar = false;
+      } else if (angkaSekarang.length < 12) {
+        angkaSekarang += n;
+      }
+    }
+
+    function ketikDesimal() {
+      if (timpaLayar || angkaSekarang === "Error") {
+        angkaSekarang = "0";
+        timpaLayar = false;
+      }
+      if (!angkaSekarang.includes(".")) angkaSekarang += ".";
+    }
+
+    function hitung(a, b, op) {
+      a = parseFloat(a);
+      b = parseFloat(b);
+      let hasil;
+      if (op === "+") hasil = a + b;
+      if (op === "−") hasil = a - b;
+      if (op === "×") hasil = a * b;
+      if (op === "÷") {
+        if (b === 0) return "Error"; // tidak boleh dibagi nol
+        hasil = a / b;
+      }
+      // Membulatkan supaya 0.1 + 0.2 tidak menjadi 0.30000000000000004
+      return String(parseFloat(hasil.toFixed(10)));
+    }
+
+    function pilihOperator(op) {
+      if (angkaSekarang === "Error") return;
+      // Kalau sudah ada hitungan berjalan, selesaikan dulu (mis. 2 + 3 + ...)
+      if (operatorAktif && !timpaLayar) {
+        angkaSekarang = hitung(angkaSebelumnya, angkaSekarang, operatorAktif);
+      }
+      if (angkaSekarang === "Error") {
+        operatorAktif = "";
+        return;
+      }
+      angkaSebelumnya = angkaSekarang;
+      operatorAktif = op;
+      timpaLayar = true;
+    }
+
+    function tekanSamaDengan() {
+      if (!operatorAktif || angkaSekarang === "Error") return;
+      angkaSekarang = hitung(angkaSebelumnya, angkaSekarang, operatorAktif);
+      operatorAktif = "";
+      angkaSebelumnya = "";
+      timpaLayar = true;
+    }
+
+    function hapusSemua() {
+      angkaSekarang = "0";
+      angkaSebelumnya = "";
+      operatorAktif = "";
+      timpaLayar = false;
+    }
+
+    function hapusSatu() {
+      if (timpaLayar || angkaSekarang === "Error") return;
+      angkaSekarang = angkaSekarang.length > 1 ? angkaSekarang.slice(0, -1) : "0";
+    }
+
+    function persen() {
+      if (angkaSekarang === "Error") return;
+      angkaSekarang = String(parseFloat(angkaSekarang) / 100);
+    }
+
+    // ====== 4. Menangkap klik pada semua tombol ======
+    document.querySelector(".tombol").addEventListener("click", function (e) {
+      const tombol = e.target.closest("button");
+      if (!tombol) return;
+
+      const aksi = tombol.dataset.aksi;
+      const nilai = tombol.dataset.nilai;
+
+      if (aksi === "angka") ketikAngka(nilai);
+      if (aksi === "desimal") ketikDesimal();
+      if (aksi === "operator") pilihOperator(nilai);
+      if (aksi === "hasil") tekanSamaDengan();
+      if (aksi === "hapus-semua") hapusSemua();
+      if (aksi === "hapus") hapusSatu();
+      if (aksi === "persen") persen();
+
+      tampilkan();
+    });
+
+    // ====== 5. Bisa juga memakai keyboard ======
+    document.addEventListener("keydown", function (e) {
+      if (e.key >= "0" && e.key <= "9") ketikAngka(e.key);
+      else if (e.key === "." || e.key === ",") ketikDesimal();
+      else if (e.key === "+") pilihOperator("+");
+      else if (e.key === "-") pilihOperator("−");
+      else if (e.key === "*") pilihOperator("×");
+      else if (e.key === "/") { e.preventDefault(); pilihOperator("÷"); }
+      else if (e.key === "Enter" || e.key === "=") { e.preventDefault(); tekanSamaDengan(); }
+      else if (e.key === "Backspace") hapusSatu();
+      else if (e.key === "Escape") hapusSemua();
+      else return;
+      tampilkan();
+    });
+
+    tampilkan();
+  </script>
+</body>
+</html>
