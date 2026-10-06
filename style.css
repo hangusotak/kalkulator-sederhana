@@ -100,7 +100,7 @@ body {
 }
 
 .tombol .operator {
-  background: var(--operator);
+  background: #E91E63;
   font-size: 1.5rem;
 }
 
