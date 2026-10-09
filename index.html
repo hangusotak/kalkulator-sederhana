@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Kalkulator Sederhana</title>
   <!-- Menghubungkan file tampilan -->
   <link rel="stylesheet" href="style.css">
@@ -50,6 +50,7 @@
     let angkaSebelumnya = "";  // angka pertama sebelum operator
     let operatorAktif = "";    // + − × ÷
     let timpaLayar = false;    // true = ketikan berikutnya mengganti layar
+    let riwayatSelesai = "";   // hitungan yang sudah selesai, mis. "50 × 3 ="
 
     const layarAngka = document.getElementById("angka");
     const layarRiwayat = document.getElementById("riwayat");
@@ -58,9 +59,17 @@
     function tampilkan() {
       // Tampilkan angka dengan koma (gaya Indonesia)
       layarAngka.textContent = angkaSekarang.replace(".", ",");
-      layarRiwayat.textContent = operatorAktif
-        ? angkaSebelumnya.replace(".", ",") + " " + operatorAktif
-        : "";
+
+      if (operatorAktif) {
+        // Sedang menghitung: tampilkan "50 ×"
+        layarRiwayat.textContent = angkaSebelumnya.replace(".", ",") + " " + operatorAktif;
+      } else if (timpaLayar) {
+        // Baru selesai menghitung: tampilkan "50 × 3 ="
+        layarRiwayat.textContent = riwayatSelesai;
+      } else {
+        // Sedang mengetik angka baru: riwayat dikosongkan
+        layarRiwayat.textContent = "";
+      }
     }
 
     // ====== 3. Aksi tiap tombol ======
@@ -113,6 +122,12 @@
 
     function tekanSamaDengan() {
       if (!operatorAktif || angkaSekarang === "Error") return;
+
+      // Simpan hitungan lengkap sebelum dihitung, mis. "50 × 3 ="
+      riwayatSelesai =
+        angkaSebelumnya.replace(".", ",") + " " + operatorAktif + " " +
+        angkaSekarang.replace(".", ",") + " =";
+
       angkaSekarang = hitung(angkaSebelumnya, angkaSekarang, operatorAktif);
       operatorAktif = "";
       angkaSebelumnya = "";
@@ -123,6 +138,7 @@
       angkaSekarang = "0";
       angkaSebelumnya = "";
       operatorAktif = "";
+      riwayatSelesai = "";
       timpaLayar = false;
     }
 
@@ -134,6 +150,8 @@
     function persen() {
       if (angkaSekarang === "Error") return;
       angkaSekarang = String(parseFloat(angkaSekarang) / 100);
+      riwayatSelesai = "";   // kosongkan riwayat lama
+      timpaLayar = false;    // sembunyikan riwayat
     }
 
     // ====== 4. Menangkap klik pada semua tombol ======
