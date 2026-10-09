@@ -1,17 +1,36 @@
-/* ====== Warna (ubah di sini kalau ingin ganti tema) ====== */
+/* =====================================================
+   KALKULATOR SEDERHANA - style.css
+   Bagian 1: Warna  |  Bagian 2: Dasar  |  Bagian 3: Layar
+   Bagian 4: Tombol |  Bagian 5: Tampilan HP
+   ===================================================== */
+
+
+/* ====== 1. WARNA (ubah di sini kalau ingin ganti tema) ====== */
 :root {
-  --latar: #e6ebef;
-  --badan: #1f2a33;
-  --layar: #121a20;
-  --tombol: #33424e;
-  --tombol-hover: #3f505e;
-  --fungsi: #566876;
-  --operator: #3d8fa6;
-  --sama: #f0b13a;
-  --teks: #f2f5f7;
-  --teks-redup: #9db0bd;
+  --latar: #dfe6ec;            /* warna di belakang kalkulator (laptop) */
+  --badan: #1a232d;            /* badan kalkulator */
+  --layar: #0f161d;            /* kotak layar angka */
+
+  --tombol: #2b3744;           /* tombol angka */
+  --tombol-hover: #364453;
+
+  --fungsi: #4b5d6e;           /* tombol AC, ⌫, % */
+  --fungsi-hover: #5a6e80;
+
+  --operator: #2fb3a0;         /* tombol ÷ × − + (hijau tosca) */
+  --operator-hover: #45c7b4;
+  --teks-operator: #08241f;
+
+  --sama: #f2b544;             /* tombol = (kuning) */
+  --sama-hover: #f7c660;
+  --teks-sama: #2a1d03;
+
+  --teks: #f1f5f8;             /* teks utama */
+  --teks-redup: #8fa3b3;       /* teks riwayat hitungan */
 }
 
+
+/* ====== 2. DASAR ====== */
 * {
   box-sizing: border-box;
 }
@@ -19,14 +38,15 @@
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;          /* tinggi layar HP yang sebenarnya */
   display: flex;
-  align-items: center;       /* tengah secara vertikal */
-  justify-content: center;   /* tengah secara horizontal */
+  align-items: center;         /* tengah secara vertikal */
+  justify-content: center;     /* tengah secara horizontal */
   background: var(--latar);
   font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
 }
 
-/* ====== Badan kalkulator ====== */
+/* Badan kalkulator */
 .kalkulator {
   width: 100%;
   max-width: 340px;
@@ -34,10 +54,11 @@ body {
   padding: 18px;
   background: var(--badan);
   border-radius: 20px;
-  box-shadow: 0 18px 40px rgba(31, 42, 51, 0.35);
+  box-shadow: 0 18px 40px rgba(26, 35, 45, 0.35);
 }
 
-/* ====== Layar ====== */
+
+/* ====== 3. LAYAR ====== */
 .layar {
   min-height: 96px;
   padding: 14px 16px;
@@ -56,17 +77,19 @@ body {
 
 .angka {
   margin-top: 6px;
-  font-size: 2.6rem;
+  font-size: 2.4rem;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;   /* lebar angka sama rata */
   color: var(--teks);
   word-wrap: break-word;
   word-break: break-all;
 }
 
-/* ====== Tombol ====== */
+
+/* ====== 4. TOMBOL ====== */
 .tombol {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);  /* 4 kolom sama lebar */
+  grid-template-columns: repeat(4, 1fr);   /* 4 kolom sama lebar */
   gap: 10px;
 }
 
@@ -80,6 +103,8 @@ body {
   font-family: inherit;
   cursor: pointer;
   transition: background 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;  /* hilangkan kotak biru saat disentuh di HP */
+  touch-action: manipulation;                /* cegah zoom saat tap cepat */
 }
 
 .tombol button:hover {
@@ -95,25 +120,101 @@ body {
   outline-offset: 2px;
 }
 
+/* Tombol AC, ⌫, % */
 .tombol .fungsi {
   background: var(--fungsi);
 }
-
-.tombol .operator {
-  background: #E91E63;
-  font-size: 1.5rem;
+.tombol .fungsi:hover {
+  background: var(--fungsi-hover);
 }
 
+/* Tombol ÷ × − + */
+.tombol .operator {
+  background: var(--operator);
+  color: var(--teks-operator);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.tombol .operator:hover {
+  background: var(--operator-hover);
+}
+
+/* Tombol = */
 .tombol .sama {
   background: var(--sama);
-  color: #1f2a33;
+  color: var(--teks-sama);
   font-weight: 700;
 }
-
-.tombol .lebar {
-  grid-column: span 2;   /* tombol 0 selebar 2 kolom */
+.tombol .sama:hover {
+  background: var(--sama-hover);
 }
 
-.tombol .fungsi:hover { background: #667a89; }
-.tombol .operator:hover { background: #4aa1b8; }
-.tombol .sama:hover { background: #f5be5a; }
+/* Tombol 0 selebar 2 kolom */
+.tombol .lebar {
+  grid-column: span 2;
+}
+
+
+/* ====== 5. TAMPILAN HP (lebar layar 600px ke bawah) ====== */
+@media (max-width: 600px) {
+
+  body {
+    align-items: stretch;      /* kalkulator memenuhi tinggi layar */
+    background: var(--badan);  /* warna sama, jadi tidak ada sisa area terang */
+  }
+
+  .kalkulator {
+    max-width: none;           /* hapus batas lebar */
+    margin: 0;                 /* hapus jarak di tepi */
+    border-radius: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;    /* layar di atas, tombol di bawah */
+    padding: 16px;
+    /* jaga jarak dari poni dan garis bawah HP */
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .layar {
+    flex: 1;                   /* layar mengambil semua sisa ruang */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* angka menempel di bawah layar */
+    margin-bottom: 14px;
+    padding: 16px 18px;
+  }
+
+  .riwayat {
+    font-size: 1.1rem;
+  }
+
+  .angka {
+    font-size: clamp(2.4rem, 12vw, 3.6rem);   /* ikut mengecil/membesar sesuai lebar HP */
+  }
+
+  .tombol {
+    gap: 12px;
+  }
+
+  .tombol button {
+    padding: 0;
+    height: clamp(58px, 10dvh, 84px);   /* tinggi tombol menyesuaikan tinggi layar */
+    font-size: 1.4rem;
+  }
+
+  .tombol .operator {
+    font-size: 1.7rem;
+  }
+}
+
+
+/* ====== 6. Hormati pengguna yang mematikan animasi ====== */
+@media (prefers-reduced-motion: reduce) {
+  .tombol button {
+    transition: none;
+  }
+  .tombol button:active {
+    transform: none;
+  }
+}
